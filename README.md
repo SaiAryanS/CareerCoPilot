@@ -4,10 +4,20 @@ CareerPilot AI is an intelligent web application powered by **Llama 3.1** that h
 
 ## 🌟 Core Features
 
-### 🔐 **User Authentication**
-- Complete registration and login system for users
+### 🔐 **Multi-Role Authentication System** (NEW v2.1)
+- **Three User Types**: Individual job seekers, Company/Recruiters, Career Coaches
+- **Role-Based Access**: Automatic routing to appropriate dashboards
+- **Company Accounts**: Extended registration with company details (name, size, industry)
+- Complete registration and login system with password hashing (bcryptjs)
 - Secure admin panel with separate authentication
-- Password hashing with bcryptjs
+
+### 🏢 **Company Dashboard & Bulk Analysis** (NEW v2.1)
+- **Bulk Resume Upload**: Process up to 50 resumes at once against a job description
+- **Private Job Postings**: Create company-specific job descriptions
+- **AI-Powered Ranking**: Automatically rank candidates by match score
+- **Batch Processing**: Track progress of bulk analysis in real-time
+- **Analytics Dashboard**: View hiring insights and statistics
+- **Candidate Management**: Filter, sort, and export top candidates
 
 ### 🤖 **Intelligent AI Career Agent** (Powered by Llama 3.1)
 - **Natural Conversation Flow**: Engage in back-and-forth dialogue for resume analysis and interview prep
@@ -54,12 +64,19 @@ CareerPilot AI is an intelligent web application powered by **Llama 3.1** that h
 -   **Styling**: [Tailwind CSS](https://tailwindcss.com/) with [ShadCN UI](https://ui.shadcn.com/) components
 -   **AI Framework**: [Genkit](https://firebase.google.com/docs/genkit) for AI flow orchestration
 -   **LLM Provider**: [Ollama](https://ollama.com/) with **Llama 3.1 8B** model (local, private)
--   **PDF Parsing**: [pdfjs-dist](https://mozilla.github.io/pdf.js/) 4.2.67 with enhanced position-aware extraction
+-   **PDF Parsing**: [pdf2json](https://www.npmjs.com/package/pdf2json) for reliable PDF text extraction in Node.js
 -   **Database**: [MongoDB](https://www.mongodb.com/) for storing users, jobs, and analysis history
 -   **Authentication**: Custom implementation with `bcryptjs` password hashing
 -   **Speech Recognition**: Web Speech API for voice input
 
 ## 🚀 Key Technical Features
+
+### Bulk Resume Processing
+- **Parallel PDF Extraction**: Efficient processing of multiple resumes using pdf2json
+- **Event-Based Parsing**: Handles various PDF formats and encoding issues gracefully
+- **Fallback Decoding**: Automatically handles malformed URI encoding in PDFs
+- **Batch Tracking**: Real-time progress monitoring with MongoDB-backed state management
+- **Error Resilience**: Individual resume failures don't stop the entire batch
 
 ### Enhanced PDF Parsing
 - **Position-Aware Extraction**: Reads text based on X/Y coordinates (top→bottom, left→right)
@@ -67,6 +84,7 @@ CareerPilot AI is an intelligent web application powered by **Llama 3.1** that h
 - **Multi-Column Support**: Correctly handles two-column resume layouts
 - **Smart Spacing**: Prevents word merging with intelligent space insertion
 - **Page Breaks**: Clear markers between pages for better context
+- **Robust Error Handling**: Graceful fallback for encoding issues and malformed PDFs
 
 ### Intelligent Agent System
 - **Multi-Pattern Job Description Extraction**: 4 different regex patterns to catch JDs in any format
@@ -210,6 +228,48 @@ Follow these instructions to set up and run the project locally.
 3. **View Users**: See all registered users
 4. **Monitor Activity**: Track platform usage
 
+### For Company/Recruiter Users (NEW v2.1)
+
+1. **Register** as a company at `/register`:
+   - Select "Company / Recruiter" role
+   - Fill in company details (name, size, industry, website)
+   - Complete registration
+
+2. **Access Company Dashboard** at `/company/dashboard`:
+   - View batch analysis statistics
+   - Monitor active job postings
+   - See average match scores
+
+3. **Bulk Resume Analysis**:
+   - Go to **Bulk Upload** (`/company/bulk-upload`)
+   - Select or create a job description
+   - Upload multiple resumes (up to 50 PDFs at once)
+   - Click **Start Batch Analysis**
+   - Track processing progress in real-time
+   - View ranked candidates sorted by AI match score
+   - **Supported PDF Formats**: Text-based PDFs (works with various encodings and formats)
+
+4. **Manage Job Postings** at `/company/jobs`:
+   - Create private company-specific job descriptions
+   - Edit existing jobs
+   - Use jobs for bulk analysis matching
+
+5. **Review Candidates**:
+   - See candidates ranked by match score (highest to lowest)
+   - Filter by score thresholds using the slider
+   - Export top candidates to CSV
+   - Download original resumes
+   - View detailed AI analysis for each candidate
+   - See matching skills, missing skills, and recommendations
+
+### For Career Coach Users (NEW v2.1)
+
+Career coaches have access to all individual features and can:
+- Help multiple clients analyze resumes
+- Guide interview preparation
+- Track client progress (coming soon)
+- Generate coaching reports (coming soon)
+
 ## ⚙️ Configuration
 
 ### Using Different Ollama Models
@@ -326,8 +386,17 @@ ollama list
 
 ### PDF Parsing Issues
 - Ensure PDF contains selectable text (not scanned images)
-- Check browser console for errors
-- Verify `pdfjs-dist` is properly loaded
+- The system uses pdf2json which handles most PDF formats
+- Malformed encoding is automatically handled with fallback decoding
+- Check server logs for specific PDF parsing errors
+- If a specific PDF fails, try re-saving it from a PDF viewer
+
+### Bulk Upload Issues
+- Maximum 50 PDFs per batch
+- Each PDF should be under 10MB
+- Processing time depends on resume length and AI analysis complexity
+- Check `/api/company/batch-results/[id]` for detailed error messages
+- Failed individual resumes don't affect other resumes in the batch
 
 ### Agent Context Issues
 - Check conversation history in browser DevTools Network tab
@@ -343,9 +412,28 @@ mongosh "<your-connection-string>"
 echo $MONGODB_URI
 ```
 
-## 🔄 Recent Improvements (v2.0)
+## 🔄 Recent Improvements
 
-### Enhanced AI Agent System
+### v2.2 - Enhanced Bulk Processing (Latest)
+- ✅ **Improved PDF Parsing**: Migrated from pdf-parse to pdf2json for better Next.js compatibility
+- ✅ **Robust Error Handling**: Automatic fallback for malformed URI encoding in PDFs
+- ✅ **Better Compatibility**: Handles various PDF formats and encodings gracefully
+- ✅ **Event-Based Processing**: Reliable async parsing with proper error propagation
+- ✅ **Production Ready**: Eliminates webpack bundling issues with PDF libraries
+
+### v2.1 - Multi-Role System & Bulk Analysis
+- ✅ **Multi-Role Authentication**: Support for Individual, Company/Recruiter, and Career Coach accounts
+- ✅ **Company Dashboard**: Dedicated dashboard for recruiters with analytics and batch tracking
+- ✅ **Bulk Resume Upload**: Process up to 50 resumes simultaneously against a job description
+- ✅ **Private Job Postings**: Company-specific job descriptions not visible to other users
+- ✅ **AI-Powered Candidate Ranking**: Automatic sorting by match score for efficient hiring
+- ✅ **Role-Based Navigation**: Dynamic navbar showing relevant links based on user type
+- ✅ **Enhanced Registration**: Company-specific fields (name, size, industry, website)
+- ✅ **Smart Redirects**: Automatic routing to appropriate dashboard based on role
+- ✅ **CSV Export**: Download candidate lists with scores and analysis
+- ✅ **Resume Download**: Direct access to original uploaded PDFs
+
+### v2.0 - Enhanced AI Agent System
 - ✅ **Smart Context Retention**: Agent now remembers job descriptions and resumes throughout conversation
 - ✅ **Multi-Pattern Extraction**: 4 different regex patterns to detect job descriptions in any format
 - ✅ **Priority-Based Workflow**: Analysis always happens before interview questions
@@ -353,14 +441,14 @@ echo $MONGODB_URI
 - ✅ **Unlimited Questions**: Users can request as many interview questions as they need
 - ✅ **Increased Context Window**: 4096 tokens for better conversation memory
 
-### Improved PDF Parsing
+### v2.0 - Improved PDF Parsing
 - ✅ **Position-Aware Extraction**: Reads text based on X/Y coordinates (top→bottom, left→right)
 - ✅ **Line Detection**: Preserves document structure by detecting Y-position changes
 - ✅ **Multi-Column Support**: Correctly handles two-column resume layouts
 - ✅ **Smart Word Spacing**: Prevents words from merging together
 - ✅ **Page Break Markers**: Clear separation between pages
 
-### Better User Experience
+### v2.0 - Better User Experience
 - ✅ **Clearer Visual Indicators**: "Powered by Llama 3.1" branding
 - ✅ **Enhanced Welcome Message**: Shows agent capabilities upfront
 - ✅ **Markdown Formatting**: Professional-looking analysis results
@@ -379,7 +467,7 @@ This project is licensed under the MIT License.
 - [Ollama](https://ollama.com/) for making local LLMs accessible
 - [Meta AI](https://ai.meta.com/) for Llama 3.1
 - [Firebase Genkit](https://firebase.google.com/docs/genkit) for AI orchestration
-- [Mozilla PDF.js](https://mozilla.github.io/pdf.js/) for PDF parsing
+- [pdf2json](https://www.npmjs.com/package/pdf2json) for reliable PDF parsing
 - [ShadCN UI](https://ui.shadcn.com/) for beautiful components
 
 ## 📞 Support

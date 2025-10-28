@@ -14,7 +14,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
-type AuthState = 'user' | 'admin' | null;
+type AuthState = 'user' | 'company' | 'coach' | 'admin' | null;
 
 export default function Navbar() {
   const [authState, setAuthState] = useState<AuthState>(null);
@@ -25,11 +25,18 @@ export default function Navbar() {
   useEffect(() => {
     const isAdmin = sessionStorage.getItem('isAdmin') === 'true';
     const isLoggedIn = sessionStorage.getItem('isLoggedIn') === 'true';
+    const userRole = sessionStorage.getItem('userRole');
 
     if (isAdmin) {
       setAuthState('admin');
     } else if (isLoggedIn) {
-      setAuthState('user');
+      if (userRole === 'company') {
+        setAuthState('company');
+      } else if (userRole === 'coach') {
+        setAuthState('coach');
+      } else {
+        setAuthState('user');
+      }
     } else {
       setAuthState(null);
     }
@@ -40,6 +47,8 @@ export default function Navbar() {
     sessionStorage.removeItem('isLoggedIn');
     sessionStorage.removeItem('isAdmin');
     sessionStorage.removeItem('userEmail');
+    sessionStorage.removeItem('userRole');
+    sessionStorage.removeItem('userName');
     setAuthState(null);
     
     const targetUrl = isAdmin ? '/admin/login' : '/';
@@ -58,6 +67,44 @@ export default function Navbar() {
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => handleLogout(true)}>
+            Log Out
+          </DropdownMenuItem>
+        </>
+      );
+    }
+    if (authState === 'company') {
+      return (
+        <>
+          <DropdownMenuItem asChild>
+            <Link href="/company/dashboard">Company Dashboard</Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href="/company/bulk-upload">Bulk Upload</Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href="/company/jobs">Manage Jobs</Link>
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={() => handleLogout(false)}>
+            Log Out
+          </DropdownMenuItem>
+        </>
+      );
+    }
+    if (authState === 'coach') {
+      return (
+        <>
+          <DropdownMenuItem asChild>
+            <Link href="/">Analyze Resume</Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href="/agent">AI Agent</Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href="/history">Analysis History</Link>
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={() => handleLogout(false)}>
             Log Out
           </DropdownMenuItem>
         </>

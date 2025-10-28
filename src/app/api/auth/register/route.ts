@@ -14,6 +14,12 @@ const registerSchema = z
     email: z.string().email(),
     phoneNumber: z.string().min(10),
     password: z.string().refine((value) => passwordValidation.test(value)),
+    role: z.enum(['individual', 'company', 'coach']).default('individual'),
+    // Company-specific fields (optional)
+    companyName: z.string().optional(),
+    companySize: z.string().optional(),
+    industry: z.string().optional(),
+    website: z.string().optional(),
   });
 
 export async function POST(request: Request) {
@@ -25,7 +31,12 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: 'Invalid input', errors: validation.error.errors }, { status: 400 });
     }
 
-    const { username, email, phoneNumber, password } = validation.data;
+    const { username, email, phoneNumber, password, role, companyName, companySize, industry, website } = validation.data;
+
+    // Validate company fields if role is company
+    if (role === 'company' && (!companyName || companyName.trim().length === 0)) {
+      return NextResponse.json({ message: 'Company name is required for company accounts' }, { status: 400 });
+    }
 
     const client = await clientPromise;
     const db = client.db();
@@ -40,14 +51,28 @@ export async function POST(request: Request) {
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create new user
-    const result = await usersCollection.insertOne({
+    // Prepare user document
+    const userDocument: any = {
       username,
       email,
       phoneNumber,
       password: hashedPassword,
+      role: role || 'individual',
       createdAt: new Date(),
-    });
+    };
+
+    // Add company info if role is company
+    if (role === 'company' && companyName) {
+      userDocument.companyInfo = {
+        companyName,
+        companySize: companySize || undefined,
+        industry: industry || undefined,
+        website: website || undefined,
+      };
+    }
+
+    // Create new user
+    const result = await usersCollection.insertOne(userDocument);
 
     return NextResponse.json({ message: 'User registered successfully', userId: result.insertedId }, { status: 201 });
   } catch (error) {

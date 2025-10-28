@@ -60,15 +60,25 @@ export default function LoginPage() {
         throw new Error(data.message || 'Login failed');
       }
 
-      // Store login state and user's email
+      // Store login state, user's email, and role
       sessionStorage.setItem('isLoggedIn', 'true');
       sessionStorage.setItem('userEmail', data.user.email);
+      sessionStorage.setItem('userRole', data.user.role || 'individual');
+      sessionStorage.setItem('userName', data.user.username);
 
       toast({
         title: "Login Successful",
         description: "Welcome back! Redirecting...",
       });
-      router.push('/');
+
+      // Redirect based on role
+      if (data.user.role === 'company') {
+        router.push('/company/dashboard');
+      } else if (data.user.role === 'coach') {
+        router.push('/'); // For now, coaches go to home (can add coach dashboard later)
+      } else {
+        router.push('/');
+      }
       router.refresh(); // Force a refresh to update navbar state
     } catch (error: any) {
       toast({
