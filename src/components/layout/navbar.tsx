@@ -95,7 +95,7 @@ export default function Navbar() {
       return (
         <>
           <DropdownMenuItem asChild>
-            <Link href="/">Analyze Resume</Link>
+            <Link href="/analyze">Analyze Resume</Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
             <Link href="/agent">AI Agent</Link>
@@ -114,7 +114,7 @@ export default function Navbar() {
       return (
         <>
           <DropdownMenuItem asChild>
-            <Link href="/">Analyze Resume</Link>
+            <Link href="/analyze">Analyze Resume</Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
             <Link href="/agent">AI Agent</Link>

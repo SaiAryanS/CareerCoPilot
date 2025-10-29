@@ -155,40 +155,40 @@ export default function RegisterPage() {
                         defaultValue={field.value}
                         className="flex flex-col space-y-2"
                       >
-                        <div className="flex items-center space-x-3 space-y-0 rounded-md border p-4 hover:bg-accent cursor-pointer">
+                        <div className="flex items-center space-x-3 space-y-0 rounded-md border p-4 hover:bg-accent hover:text-accent-foreground cursor-pointer group">
                           <RadioGroupItem value="individual" id="individual" />
                           <label htmlFor="individual" className="flex-1 cursor-pointer">
                             <div className="flex items-center gap-2 font-semibold">
-                              <User className="h-5 w-5 text-primary" />
+                              <User className="h-5 w-5 text-primary group-hover:text-accent-foreground" />
                               Individual / Personal
                             </div>
-                            <p className="text-sm text-muted-foreground mt-1">
+                            <p className="text-sm text-muted-foreground group-hover:text-accent-foreground/80 mt-1">
                               Resume analysis & interview practice for yourself
                             </p>
                           </label>
                         </div>
                         
-                        <div className="flex items-center space-x-3 space-y-0 rounded-md border p-4 hover:bg-accent cursor-pointer">
+                        <div className="flex items-center space-x-3 space-y-0 rounded-md border p-4 hover:bg-accent hover:text-accent-foreground cursor-pointer group">
                           <RadioGroupItem value="company" id="company" />
                           <label htmlFor="company" className="flex-1 cursor-pointer">
                             <div className="flex items-center gap-2 font-semibold">
-                              <Building2 className="h-5 w-5 text-primary" />
+                              <Building2 className="h-5 w-5 text-primary group-hover:text-accent-foreground" />
                               Company / Recruiter
                             </div>
-                            <p className="text-sm text-muted-foreground mt-1">
+                            <p className="text-sm text-muted-foreground group-hover:text-accent-foreground/80 mt-1">
                               Bulk resume screening & company job postings
                             </p>
                           </label>
                         </div>
                         
-                        <div className="flex items-center space-x-3 space-y-0 rounded-md border p-4 hover:bg-accent cursor-pointer">
+                        <div className="flex items-center space-x-3 space-y-0 rounded-md border p-4 hover:bg-accent hover:text-accent-foreground cursor-pointer group">
                           <RadioGroupItem value="coach" id="coach" />
                           <label htmlFor="coach" className="flex-1 cursor-pointer">
                             <div className="flex items-center gap-2 font-semibold">
-                              <GraduationCap className="h-5 w-5 text-primary" />
+                              <GraduationCap className="h-5 w-5 text-primary group-hover:text-accent-foreground" />
                               Career Coach
                             </div>
-                            <p className="text-sm text-muted-foreground mt-1">
+                            <p className="text-sm text-muted-foreground group-hover:text-accent-foreground/80 mt-1">
                               Manage multiple clients and track their progress
                             </p>
                           </label>
